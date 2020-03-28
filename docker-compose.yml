@@ -1,0 +1,25 @@
+version: '2'
+services:
+  php:
+    image: gridsome-wordpress-php
+    build:
+      context: .
+      dockerfile: ./wordpress/misc/Dockerfile-php
+    environment:
+      - WP_HOME=http://linyows.internal
+      - WP_SITEURL=http://linyows.internal
+    volumes:
+      - ./wordpress/db:/var/www/db:rw
+      - ./wordpress/wp-content:/var/www/html/wp-content:rw
+    restart: always
+  http:
+    image: gridsome-wordpress-http
+    build:
+      context: .
+      dockerfile: ./wordpress/misc/Dockerfile-http
+    links:
+      - php:wordpress
+    volumes_from:
+      - php
+    ports:
+      - "80:80"
